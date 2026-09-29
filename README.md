@@ -1,6 +1,6 @@
-# 个人主页与图片去背景
+# something-went-wrong
 
-这是一个单页个人网站：保留个人介绍、北京天气和学习记录，并提供 AI 图片背景去除与文字生成图像功能。后端使用 Node.js 和 Express；Replicate API Token 与 OpenRouter API Key 从本地 `.env` 文件读取，也可以由系统环境变量提供。
+个人学习网站：包含个人介绍、北京天气、学习记录、AI 图片背景去除与文字生成图像功能。后端使用 Node.js 和 Express；Replicate API Token 与 OpenRouter API Key 从本地 `.env` 文件读取，也可以由系统环境变量提供。
 
 去背景使用 [lucataco/remove-bg](https://replicate.com/lucataco/remove-bg/api)，结果为透明 PNG。
 服务端固定使用该模型的版本 `95fcc2a26d3899cd6c2691c900465aaeff466285a65c14638cc5f36f34befaf1`，并通过 SDK 的 `replicate.run()` 等待处理完成。
