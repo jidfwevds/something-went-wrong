@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f6f2">
+  <title>我的个人主页</title>
+  <style>
+    :root {
+      --page: #f7f6f2;
+      --paper: #fffefa;
+      --ink: #242c35;
+      --muted: #77818a;
+      --accent: #557b68;
+      --accent-light: #e8efe8;
+      --line: #e7e7df;
+      --serif: Georgia, "Noto Serif SC", "Songti SC", serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-snap-type: y proximity;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--page);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .topbar {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px max(7vw, 24px);
+    }
+
+    .wordmark {
+      font-family: var(--serif);
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .nav {
+      display: flex;
+      gap: 30px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .nav a:hover {
+      color: var(--accent);
+    }
+
+    .weather {
+      display: grid;
+      min-width: 155px;
+      gap: 3px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgb(255 254 250 / 86%);
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .weather-main {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .weather-icon {
+      color: var(--accent);
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .weather-error {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+    }
+
+    .weather-retry {
+      padding: 0;
+      border: 0;
+      background: none;
+      color: var(--accent);
+      cursor: pointer;
+      font: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .screen {
+      position: relative;
+      display: flex;
+      min-height: 100svh;
+      align-items: center;
+      padding: 110px max(7vw, 24px) 72px;
+      scroll-snap-align: start;
+    }
+
+    .about {
+      overflow: hidden;
+    }
+
+    .about::before {
+      position: absolute;
+      top: 15%;
+      right: -110px;
+      width: 440px;
+      height: 440px;
+      border: 1px solid #e8e8df;
+      border-radius: 50%;
+      content: "";
+    }
+
+    .about::after {
+      position: absolute;
+      top: 21%;
+      right: -55px;
+      width: 330px;
+      height: 330px;
+      border: 1px solid #e8e8df;
+      border-radius: 50%;
+      content: "";
+    }
+
+    .about-inner {
+      position: relative;
+      z-index: 0;
+      display: grid;
+      width: min(100%, 1040px);
+      grid-template-columns: 1fr 350px;
+      align-items: center;
+      gap: clamp(44px, 9vw, 120px);
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 23px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 650;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 24px;
+      height: 1px;
+      background: currentColor;
+      content: "";
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 15px;
+      font-family: var(--serif);
+      font-size: clamp(48px, 7vw, 76px);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      line-height: 1.12;
+    }
+
+    .intro {
+      max-width: 440px;
+      margin-bottom: 36px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.9;
+    }
+
+    .detail {
+      display: grid;
+      grid-template-columns: 76px 1fr;
+      gap: 13px;
+      margin: 0 0 17px;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .detail-label {
+      color: var(--muted);
+    }
+
+    .interests {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      padding: 5px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgb(255 254 250 / 65%);
+      font-size: 12px;
+    }
+
+    .portrait-wrap {
+      position: relative;
+      justify-self: center;
+      width: 270px;
+      height: 270px;
+    }
+
+    .portrait-wrap::before,
+    .portrait-wrap::after {
+      position: absolute;
+      border: 1px solid #dce4dc;
+      border-radius: 50%;
+      content: "";
+    }
+
+    .portrait-wrap::before {
+      inset: -16px;
+    }
+
+    .portrait-wrap::after {
+      inset: -27px;
+      border-color: #e7e8df;
+    }
+
+    .portrait {
+      position: relative;
+      display: grid;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      place-items: center;
+      border: 7px solid var(--paper);
+      border-radius: 50%;
+      background: #e8efe8;
+      box-shadow: 0 18px 55px rgb(35 50 40 / 10%);
+    }
+
+    .portrait img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .portrait-fallback {
+      display: grid;
+      width: 100%;
+      height: 100%;
+      place-items: center;
+      color: var(--accent);
+      font-family: var(--serif);
+      font-size: 68px;
+      letter-spacing: 0.05em;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      transform: translateX(-50%);
+    }
+
+    .scroll-hint::after {
+      width: 30px;
+      height: 1px;
+      background: #b8c6ba;
+      content: "";
+    }
+
+    .learning {
+      background: var(--paper);
+    }
+
+    .remove-screen {
+      background: var(--page);
+    }
+
+    .remove-inner {
+      width: min(100%, 920px);
+      margin: 0 auto;
+    }
+
+    .remove-heading {
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .remove-heading .eyebrow {
+      justify-content: center;
+    }
+
+    .remove-heading .section-subtitle {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .remove-card {
+      padding: clamp(20px, 4vw, 38px);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--paper);
+      box-shadow: 0 18px 60px rgb(35 50 40 / 5%);
+    }
+
+    .upload-zone {
+      display: grid;
+      min-height: 150px;
+      place-content: center;
+      justify-items: center;
+      gap: 8px;
+      padding: 24px;
+      border: 1px dashed #c7d2c8;
+      border-radius: 16px;
+      background: #fafbf8;
+      color: var(--muted);
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 160ms ease, background 160ms ease;
+    }
+
+    .upload-zone:hover,
+    .upload-zone.is-dragging {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+
+    .upload-zone:focus-within {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .upload-icon {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 21px;
+    }
+
+    .upload-title {
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .upload-hint,
+    .selected-file {
+      font-size: 12px;
+    }
+
+    .selected-file {
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      color: var(--accent);
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      clip-path: inset(50%);
+    }
+
+    .remove-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .remove-button,
+    .download-button {
+      display: inline-flex;
+      min-height: 43px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--accent);
+      color: white;
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 160ms ease, opacity 160ms ease, transform 160ms ease;
+    }
+
+    .remove-button:hover:not(:disabled),
+    .download-button:hover {
+      background: #426452;
+      transform: translateY(-1px);
+    }
+
+    .remove-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    .remove-status {
+      min-height: 21px;
+      margin: 15px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .remove-status.is-error {
+      color: #a3433d;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .comparison[hidden] {
+      display: none;
+    }
+
+    .comparison-panel {
+      min-width: 0;
+    }
+
+    .comparison-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 9px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .comparison-image {
+      display: grid;
+      min-height: 230px;
+      overflow: hidden;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background-color: #f6f6f2;
+      background-image: linear-gradient(45deg, #e9e9e3 25%, transparent 25%),
+        linear-gradient(-45deg, #e9e9e3 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #e9e9e3 75%),
+        linear-gradient(-45deg, transparent 75%, #e9e9e3 75%);
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+      background-size: 16px 16px;
+    }
+
+    .comparison-image img {
+      display: block;
+      width: 100%;
+      max-height: 380px;
+      object-fit: contain;
+    }
+
+    .download-button {
+      min-height: 30px;
+      padding: 0 12px;
+      font-size: 11px;
+    }
+
+    .image-generator-screen {
+      background: #f8f9fa;
+    }
+
+    .image-generator-inner {
+      width: min(100%, 760px);
+      margin: 0 auto;
+    }
+
+    .generator-heading {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .generator-heading .eyebrow {
+      justify-content: center;
+    }
+
+    .generator-subtitle,
+    .generator-attribution {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    .generator-card {
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid #e0e3e7;
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgb(60 64 67 / 8%);
+    }
+
+    .generator-label {
+      display: block;
+      margin-bottom: 9px;
+      color: #3c4043;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .prompt-input {
+      display: block;
+      width: 100%;
+      min-height: 116px;
+      resize: vertical;
+      padding: 14px 15px;
+      border: 1px solid #dadce0;
+      border-radius: 12px;
+      background: #fff;
+      color: #202124;
+      font: inherit;
+      font-size: 14px;
+      line-height: 1.7;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .prompt-input:focus,
+    .generator-select:focus {
+      border-color: #4285f4;
+      outline: none;
+      box-shadow: 0 0 0 2px rgb(66 133 244 / 16%);
+    }
+
+    .prompt-input::placeholder {
+      color: #9aa0a6;
+    }
+
+    .prompt-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 8px;
+      color: #80868b;
+      font-size: 11px;
+    }
+
+    .generator-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .generator-select {
+      width: 100%;
+      min-height: 42px;
+      padding: 0 12px;
+      border: 1px solid #dadce0;
+      border-radius: 10px;
+      background: #fff;
+      color: #3c4043;
+      font: inherit;
+      font-size: 13px;
+    }
+
+    .generator-submit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 23px;
+    }
+
+    .generator-cost-note {
+      color: #80868b;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .generate-button {
+      display: inline-flex;
+      min-height: 43px;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 999px;
+      background: #1a73e8;
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 160ms ease, opacity 160ms ease;
+    }
+
+    .generate-button:hover:not(:disabled) {
+      background: #1765cc;
+    }
+
+    .generate-button:disabled {
+      cursor: wait;
+      opacity: 0.65;
+    }
+
+    .generator-status {
+      min-height: 21px;
+      margin: 16px 0 0;
+      color: #5f6368;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .generator-status.is-error {
+      color: #b3261e;
+    }
+
+    .generated-result {
+      margin: 24px 0 0;
+    }
+
+    .generated-result[hidden] {
+      display: none;
+    }
+
+    .generated-image-frame {
+      display: grid;
+      min-height: 220px;
+      overflow: hidden;
+      place-items: center;
+      border: 1px solid #e0e3e7;
+      border-radius: 14px;
+      background-color: #f8f9fa;
+      background-image: linear-gradient(45deg, #eceff1 25%, transparent 25%),
+        linear-gradient(-45deg, #eceff1 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #eceff1 75%),
+        linear-gradient(-45deg, transparent 75%, #eceff1 75%);
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+      background-size: 16px 16px;
+    }
+
+    .generated-image-frame img {
+      display: block;
+      width: 100%;
+      max-height: 620px;
+      object-fit: contain;
+    }
+
+    .generated-caption {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+      color: #80868b;
+      font-size: 11px;
+    }
+
+    .generator-attribution {
+      margin-top: 16px;
+      font-size: 11px;
+    }
+
+    .generator-attribution a:hover {
+      color: #1a73e8;
+      text-decoration: underline;
+    }
+
+    .learning-inner {
+      width: min(100%, 760px);
+      margin: 0 auto;
+    }
+
+    .section-heading {
+      margin-bottom: 48px;
+    }
+
+    .section-heading .eyebrow {
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      margin-bottom: 12px;
+      font-family: var(--serif);
+      font-size: clamp(34px, 5vw, 48px);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    .section-subtitle {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .timeline {
+      position: relative;
+      display: grid;
+      gap: 0;
+      padding-left: 25px;
+    }
+
+    .timeline::before {
+      position: absolute;
+      top: 9px;
+      bottom: 38px;
+      left: 4px;
+      width: 1px;
+      background: var(--line);
+      content: "";
+    }
+
+    .entry {
+      position: relative;
+      padding: 0 0 34px 20px;
+    }
+
+    .entry:last-child {
+      padding-bottom: 0;
+    }
+
+    .entry::before {
+      position: absolute;
+      top: 6px;
+      left: -25px;
+      width: 9px;
+      height: 9px;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      background: var(--paper);
+      content: "";
+    }
+
+    .entry-meta {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+
+    .entry-type {
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 11px;
+    }
+
+    h3 {
+      margin-bottom: 7px;
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 600;
+    }
+
+    .entry p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    footer {
+      padding: 20px 24px 26px;
+      background: var(--paper);
+      color: #9aa19d;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    @media (max-width: 700px) {
+      .topbar {
+        align-items: flex-start;
+        padding: 16px 20px;
+      }
+
+      .topbar-right {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 9px;
+      }
+
+      .weather {
+        min-width: 0;
+        padding: 6px 9px;
+        font-size: 10px;
+      }
+
+      .weather-main {
+        font-size: 12px;
+      }
+
+      .nav {
+        gap: 14px;
+        font-size: 11px;
+      }
+
+      .remove-screen {
+        padding-right: 20px;
+        padding-left: 20px;
+      }
+
+      .comparison {
+        grid-template-columns: 1fr;
+      }
+
+      .comparison-image {
+        min-height: 180px;
+      }
+
+      .generator-options {
+        gap: 10px;
+      }
+
+      .generator-submit-row {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .generator-cost-note {
+        text-align: center;
+      }
+
+      .generate-button {
+        width: 100%;
+      }
+
+      .screen {
+        min-height: 100svh;
+        padding: 96px 25px 76px;
+      }
+
+      .about-inner {
+        grid-template-columns: 1fr;
+        gap: 43px;
+        padding: 22px 0 10px;
+      }
+
+      .about-copy {
+        order: 1;
+      }
+
+      .portrait-wrap {
+        width: 178px;
+        height: 178px;
+      }
+
+      .portrait-fallback {
+        font-size: 52px;
+      }
+
+      .about::before {
+        top: 9%;
+        right: -170px;
+        width: 330px;
+        height: 330px;
+      }
+
+      .about::after {
+        top: 12%;
+        right: -130px;
+        width: 250px;
+        height: 250px;
+      }
+
+      h1 {
+        font-size: clamp(46px, 13vw, 64px);
+      }
+
+      .intro {
+        margin-bottom: 27px;
+        font-size: 15px;
+      }
+
+      .detail {
+        grid-template-columns: 68px 1fr;
+        font-size: 13px;
+      }
+
+      .learning-inner {
+        padding: 15px 0;
+      }
+
+      .section-heading {
+        margin-bottom: 36px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="wordmark" href="#about">个人主页<span style="color: var(--accent)">.</span></a>
+    <div class="topbar-right">
+      <div class="weather" id="weather" aria-live="polite" aria-atomic="true">
+        <span class="weather-main"><span class="weather-icon" aria-hidden="true">◌</span>北京天气</span>
+        <span id="weather-detail">正在获取天气…</span>
+      </div>
+      <nav class="nav" aria-label="页面导航">
+        <a href="#about">关于我</a>
+        <a href="#learning">学习记录</a>
+        <a href="#remove-background">去除背景</a>
+        <a href="#image-generator">AI 绘图</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="screen about" id="about" aria-labelledby="about-title">
+      <div class="about-inner">
+        <div class="about-copy">
+          <p class="eyebrow">A LITTLE ABOUT ME</p>
+          <h1 id="about-title">你好，<br>我是你的昵称</h1>
+          <p class="intro">保持好奇，认真学习，把每一个小小的想法，都慢慢变成现实。</p>
+
+          <div class="detail">
+            <span class="detail-label">兴趣爱好</span>
+            <div class="interests">
+              <span class="tag">探索新知</span>
+              <span class="tag">记录生活</span>
+              <span class="tag">创造与分享</span>
+            </div>
+          </div>
+          <div class="detail">
+            <span class="detail-label">学习目标</span>
+            <span>持续积累，把学到的知识应用到真实项目中。</span>
+          </div>
+        </div>
+
+        <div class="portrait-wrap">
+          <div class="portrait">
+            <div class="portrait-fallback" aria-hidden="true">你好</div>
+            <img src="/avatar" alt="我的头像" onerror="this.hidden = true">
+          </div>
+        </div>
+      </div>
+      <a class="scroll-hint" href="#learning">向下探索</a>
+    </section>
+
+    <section class="screen learning" id="learning" aria-labelledby="learning-title">
+      <div class="learning-inner">
+        <div class="section-heading">
+          <p class="eyebrow">MY LEARNING JOURNEY</p>
+          <h2 id="learning-title">我的学习记录</h2>
+          <p class="section-subtitle">每一次尝试，都是向前迈出的一小步。</p>
+        </div>
+
+        <div class="timeline">
+          <article class="entry">
+            <div class="entry-meta">
+              <span>学习记录 · 01</span>
+              <span class="entry-type">功能实践</span>
+            </div>
+            <h3>爬虫抓取</h3>
+            <p>完成了第一个功能：尝试使用爬虫抓取信息，开启动手实践之旅。</p>
+          </article>
+
+          <article class="entry">
+            <div class="entry-meta">
+              <span>学习记录 · 02</span>
+              <span class="entry-type">网页制作</span>
+            </div>
+            <h3>我的个人主页</h3>
+            <p>完成了第一个个人网页，把自己的介绍和学习记录整理在这里。</p>
+          </article>
+
+          <article class="entry">
+            <div class="entry-meta">
+              <span>学习记录 · 03</span>
+              <span class="entry-type">API 实践</span>
+            </div>
+            <h3>第一次 API 调用</h3>
+            <p>接入 Open-Meteo 天气 API，在个人主页展示北京的实时天气。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen remove-screen" id="remove-background" aria-labelledby="remove-title">
+      <div class="remove-inner">
+        <div class="remove-heading">
+          <p class="eyebrow">A LITTLE IMAGE MAGIC</p>
+          <h2 id="remove-title">一键去除图片背景</h2>
+          <p class="section-subtitle">上传一张图片，交给 AI 去除背景。支持 JPG、PNG、WebP，最大 10 MB。</p>
+        </div>
+
+        <div class="remove-card">
+          <label class="upload-zone" id="upload-zone" for="image-input">
+            <input
+              class="visually-hidden"
+              id="image-input"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              aria-describedby="upload-hint remove-status"
+            >
+            <span class="upload-icon" aria-hidden="true">↥</span>
+            <span class="upload-title">拖放图片到这里，或点击选择</span>
+            <span class="upload-hint" id="upload-hint">支持 JPG、PNG、WebP · 最大 10 MB</span>
+            <span class="selected-file" id="selected-file"></span>
+          </label>
+          <div class="remove-actions">
+            <button class="remove-button" id="remove-button" type="button" disabled>
+              去除背景
+            </button>
+          </div>
+          <p class="remove-status" id="remove-status" role="status" aria-live="polite"></p>
+
+          <div class="comparison" id="comparison" hidden>
+            <div class="comparison-panel">
+              <div class="comparison-label"><span>原图</span></div>
+              <div class="comparison-image">
+                <img id="original-preview" alt="待处理的原始图片">
+              </div>
+            </div>
+            <div class="comparison-panel">
+              <div class="comparison-label">
+                <span>去背景结果</span>
+                <a class="download-button" id="download-result" download="background-removed.png">
+                  下载 PNG
+                </a>
+              </div>
+              <div class="comparison-image">
+                <img id="result-preview" alt="已去除背景的图片">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen image-generator-screen" id="image-generator" aria-labelledby="generator-title">
+      <div class="image-generator-inner">
+        <div class="generator-heading">
+          <p class="eyebrow">MAKE SOMETHING NEW</p>
+          <h2 id="generator-title">文字生成图像</h2>
+          <p class="generator-subtitle">用一句描述，把脑海中的画面变成图像。</p>
+        </div>
+
+        <div class="generator-card">
+          <form id="image-generator-form">
+            <label class="generator-label" for="image-prompt">描述你想生成的图像</label>
+            <textarea
+              class="prompt-input"
+              id="image-prompt"
+              name="prompt"
+              rows="4"
+              maxlength="2000"
+              placeholder="例如：雨后的京都小巷，暖黄色灯笼倒映在石板路上，安静的电影感摄影"
+              required
+            ></textarea>
+            <div class="prompt-footer">
+              <span>描述越具体，结果越接近你的想象。</span>
+              <span><span id="prompt-count">0</span> / 2000</span>
+            </div>
+
+            <div class="generator-options">
+              <label class="generator-option">
+                <span class="generator-label">画面比例</span>
+                <select class="generator-select" id="image-aspect-ratio" name="aspectRatio">
+                  <option value="1:1">正方形 · 1:1</option>
+                  <option value="3:2">横向 · 3:2</option>
+                  <option value="2:3">纵向 · 2:3</option>
+                  <option value="4:3">横向 · 4:3</option>
+                  <option value="3:4">纵向 · 3:4</option>
+                  <option value="16:9">宽屏 · 16:9</option>
+                  <option value="9:16">竖屏 · 9:16</option>
+                  <option value="21:9">超宽 · 21:9</option>
+                  <option value="auto">自动</option>
+                </select>
+              </label>
+              <label class="generator-option">
+                <span class="generator-label">图像质量</span>
+                <select class="generator-select" id="image-quality" name="quality">
+                  <option value="auto">自动</option>
+                  <option value="low">低</option>
+                  <option value="medium">中</option>
+                  <option value="high">高</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="generator-submit-row">
+              <span class="generator-cost-note">使用 OpenRouter 模型，调用可能产生费用。</span>
+              <button class="generate-button" id="generate-button" type="submit">
+                <span aria-hidden="true">✦</span>
+                生成图像
+              </button>
+            </div>
+          </form>
+
+          <p class="generator-status" id="generator-status" role="status" aria-live="polite"></p>
+          <figure class="generated-result" id="generated-result" hidden>
+            <div class="generated-image-frame">
+              <img id="generated-image" alt="AI 生成的图像">
+            </div>
+            <figcaption class="generated-caption">
+              <span id="generated-details">由 GPT-5.4 Image 2 生成</span>
+              <a class="download-button" id="download-generated" download="openrouter-generated.png">下载图像</a>
+            </figcaption>
+          </figure>
+        </div>
+        <p class="generator-attribution">
+          <a href="https://openrouter.ai/openai/gpt-5.4-image-2/api" target="_blank" rel="noreferrer">OpenRouter · GPT-5.4 Image 2</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>用一点点好奇心，记录每一次成长。</footer>
+  <script>
+    const weatherDetail = document.getElementById("weather-detail");
+    const weatherIcon = document.querySelector(".weather-icon");
+    const weatherEndpoint = "https://api.open-meteo.com/v1/forecast";
+    const weatherParams = new URLSearchParams({
+      latitude: "39.9042",
+      longitude: "116.4074",
+      current: "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
+      timezone: "Asia/Shanghai"
+    });
+    const imageInput = document.getElementById("image-input");
+    const uploadZone = document.getElementById("upload-zone");
+    const selectedFile = document.getElementById("selected-file");
+    const removeButton = document.getElementById("remove-button");
+    const removeStatus = document.getElementById("remove-status");
+    const comparison = document.getElementById("comparison");
+    const originalPreview = document.getElementById("original-preview");
+    const resultPreview = document.getElementById("result-preview");
+    const downloadResult = document.getElementById("download-result");
+    const imageGeneratorForm = document.getElementById("image-generator-form");
+    const imagePrompt = document.getElementById("image-prompt");
+    const promptCount = document.getElementById("prompt-count");
+    const generateButton = document.getElementById("generate-button");
+    const generatorStatus = document.getElementById("generator-status");
+    const generatedResult = document.getElementById("generated-result");
+    const generatedImage = document.getElementById("generated-image");
+    const generatedDetails = document.getElementById("generated-details");
+    const downloadGenerated = document.getElementById("download-generated");
+    const allowedImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
+    const maxImageSize = 10 * 1024 * 1024;
+    let selectedImage = null;
+    let originalImageUrl = null;
+    let resultImageUrl = null;
+    let generatedImageUrl = null;
+    let isProcessing = false;
+    let isGenerating = false;
+
+    function describeWeather(code) {
+      if (code === 0) return ["晴", "☀"];
+      if (code <= 2) return ["多云", "◒"];
+      if (code === 3) return ["阴", "☁"];
+      if (code === 45 || code === 48) return ["有雾", "≋"];
+      if (code >= 51 && code <= 57) return ["毛毛雨", "☂"];
+      if (code >= 61 && code <= 67) return ["下雨", "☂"];
+      if (code >= 71 && code <= 77) return ["下雪", "❄"];
+      if (code >= 80 && code <= 82) return ["阵雨", "☂"];
+      if (code === 85 || code === 86) return ["阵雪", "❄"];
+      if (code >= 95 && code <= 99) return ["雷雨", "ϟ"];
+      throw new Error("天气服务返回了无法识别的天气代码。");
+    }
+
+    async function loadWeather() {
+      weatherDetail.textContent = "正在获取天气…";
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
+
+      try {
+        const response = await fetch(`${weatherEndpoint}?${weatherParams}`, {
+          signal: controller.signal
+        });
+        if (!response.ok) {
+          throw new Error(`天气服务请求失败（HTTP ${response.status}）。`);
+        }
+
+        const data = await response.json();
+        const current = data.current;
+        if (
+          !current ||
+          !Number.isFinite(current.temperature_2m) ||
+          !Number.isFinite(current.apparent_temperature) ||
+          !Number.isFinite(current.weather_code)
+        ) {
+          throw new Error("天气服务返回的数据不完整。");
+        }
+
+        const [description, icon] = describeWeather(current.weather_code);
+        weatherIcon.textContent = icon;
+        weatherDetail.textContent =
+          `${description} · ${Math.round(current.temperature_2m)}°C` +
+          `（体感 ${Math.round(current.apparent_temperature)}°C）`;
+      } catch (error) {
+        console.error("无法获取北京天气：", error);
+        weatherDetail.innerHTML =
+          '<span class="weather-error">天气暂不可用 <button class="weather-retry" type="button">重试</button></span>';
+        weatherDetail.querySelector(".weather-retry").addEventListener("click", loadWeather);
+      } finally {
+        clearTimeout(timeout);
+      }
+    }
+
+    function revokeImageUrl(url) {
+      if (url) URL.revokeObjectURL(url);
+    }
+
+    function clearComparison() {
+      revokeImageUrl(resultImageUrl);
+      resultImageUrl = null;
+      comparison.hidden = true;
+      resultPreview.removeAttribute("src");
+      downloadResult.removeAttribute("href");
+    }
+
+    function chooseImage(file) {
+      if (!file || isProcessing) return;
+      clearComparison();
+
+      if (!allowedImageTypes.has(file.type)) {
+        selectedImage = null;
+        revokeImageUrl(originalImageUrl);
+        originalImageUrl = null;
+        originalPreview.removeAttribute("src");
+        selectedFile.textContent = "";
+        removeButton.disabled = true;
+        removeStatus.textContent = "请选择 JPG、PNG 或 WebP 格式的图片。";
+        removeStatus.classList.add("is-error");
+        return;
+      }
+
+      if (file.size > maxImageSize) {
+        selectedImage = null;
+        revokeImageUrl(originalImageUrl);
+        originalImageUrl = null;
+        originalPreview.removeAttribute("src");
+        selectedFile.textContent = "";
+        removeButton.disabled = true;
+        removeStatus.textContent = "图片超过 10 MB，请选择较小的图片。";
+        removeStatus.classList.add("is-error");
+        return;
+      }
+
+      selectedImage = file;
+      revokeImageUrl(originalImageUrl);
+      originalImageUrl = URL.createObjectURL(file);
+      originalPreview.src = originalImageUrl;
+      selectedFile.textContent = file.name;
+      removeButton.disabled = false;
+      removeStatus.textContent = "";
+      removeStatus.classList.remove("is-error");
+    }
+
+    imageInput.addEventListener("change", () => {
+      chooseImage(imageInput.files[0]);
+      imageInput.value = "";
+    });
+
+    for (const eventName of ["dragenter", "dragover"]) {
+      uploadZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        if (!isProcessing) uploadZone.classList.add("is-dragging");
+      });
+    }
+
+    for (const eventName of ["dragleave", "drop"]) {
+      uploadZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        uploadZone.classList.remove("is-dragging");
+      });
+    }
+
+    uploadZone.addEventListener("drop", (event) => {
+      if (isProcessing) return;
+      const file = event.dataTransfer.files[0];
+      if (file) chooseImage(file);
+    });
+
+    removeButton.addEventListener("click", async () => {
+      if (!selectedImage || removeButton.disabled) return;
+
+      const formData = new FormData();
+      formData.append("image", selectedImage);
+      isProcessing = true;
+      removeButton.disabled = true;
+      imageInput.disabled = true;
+      removeButton.textContent = "处理中…";
+      removeStatus.textContent = "正在去除背景，请稍候…";
+      removeStatus.classList.remove("is-error");
+      clearComparison();
+
+      try {
+        const response = await fetch("/api/remove-background", {
+          method: "POST",
+          body: formData
+        });
+        if (!response.ok) {
+          const errorBody = await response.json().catch(() => ({}));
+          throw new Error(errorBody.error || "图片处理失败，请稍后重试。");
+        }
+
+        const resultBlob = await response.blob();
+        if (!resultBlob.type.startsWith("image/")) {
+          throw new Error("服务器返回了无法识别的图片结果。");
+        }
+
+        resultImageUrl = URL.createObjectURL(resultBlob);
+        resultPreview.src = resultImageUrl;
+        downloadResult.href = resultImageUrl;
+        comparison.hidden = false;
+        removeStatus.textContent = "背景已去除，可以预览并下载 PNG。";
+      } catch (error) {
+        console.error("图片背景去除失败：", error);
+        removeStatus.textContent = error.message;
+        removeStatus.classList.add("is-error");
+      } finally {
+        isProcessing = false;
+        imageInput.disabled = false;
+        removeButton.disabled = !selectedImage;
+        removeButton.textContent = "去除背景";
+      }
+    });
+
+    window.addEventListener("beforeunload", () => {
+      revokeImageUrl(originalImageUrl);
+      revokeImageUrl(resultImageUrl);
+      revokeImageUrl(generatedImageUrl);
+    });
+
+    imagePrompt.addEventListener("input", () => {
+      promptCount.textContent = String(imagePrompt.value.length);
+    });
+
+    imageGeneratorForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const prompt = imagePrompt.value.trim();
+      if (isGenerating || !prompt) return;
+
+      isGenerating = true;
+      generateButton.disabled = true;
+      generateButton.textContent = "正在生成…";
+      generatorStatus.textContent = "正在创作图像，请稍候…";
+      generatorStatus.classList.remove("is-error");
+      generatedResult.hidden = true;
+      revokeImageUrl(generatedImageUrl);
+      generatedImageUrl = null;
+
+      try {
+        const response = await fetch("/api/generate-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prompt,
+            aspectRatio: document.getElementById("image-aspect-ratio").value,
+            quality: document.getElementById("image-quality").value
+          })
+        });
+
+        if (!response.ok) {
+          const errorBody = await response.json().catch(() => ({}));
+          throw new Error(errorBody.error || `图像生成失败（HTTP ${response.status}）。`);
+        }
+
+        const imageBlob = await response.blob();
+        if (!imageBlob.type.startsWith("image/")) {
+          throw new Error("服务返回的内容不是有效图像。");
+        }
+
+        generatedImageUrl = URL.createObjectURL(imageBlob);
+        generatedImage.src = generatedImageUrl;
+        const extension = imageBlob.type === "image/jpeg"
+          ? "jpg"
+          : imageBlob.type === "image/webp" ? "webp" : "png";
+        downloadGenerated.href = generatedImageUrl;
+        downloadGenerated.download = `openrouter-generated.${extension}`;
+
+        const estimatedCost = response.headers.get("X-Generation-Cost");
+        generatedDetails.textContent = estimatedCost
+          ? `GPT-5.4 Image 2 · 本次约 $${estimatedCost}`
+          : "由 GPT-5.4 Image 2 生成";
+        generatedResult.hidden = false;
+        generatorStatus.textContent = "图像已生成，可以预览并下载。";
+      } catch (error) {
+        console.error("OpenRouter 图像生成失败：", error);
+        generatorStatus.textContent = error.message;
+        generatorStatus.classList.add("is-error");
+      } finally {
+        isGenerating = false;
+        generateButton.disabled = false;
+        generateButton.innerHTML = '<span aria-hidden="true">✦</span>生成图像';
+      }
+    });
+
+    loadWeather();
+  </script>
+</body>
+</html>

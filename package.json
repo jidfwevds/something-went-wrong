@@ -1,0 +1,20 @@
+{
+  "name": "personal-learning-homepage",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A personal homepage with an AI image background removal tool.",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.4",
+    "express": "^5.1.0",
+    "file-type": "^21.0.0",
+    "multer": "^2.0.2",
+    "replicate": "^1.2.0"
+  }
+}
